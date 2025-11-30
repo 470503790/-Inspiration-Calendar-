@@ -3,14 +3,14 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { DailyContent, PosterTheme } from "../types";
 import { THEME_PROMPTS } from "../constants";
 
-// Initialize Gemini Client
-// @ts-ignore
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 /**
  * Generates the text content (quote, luck, etc.) for the calendar.
+ * Requires an API key to be passed dynamically.
  */
-export const generateDailyText = async (date: Date, theme: PosterTheme): Promise<DailyContent> => {
+export const generateDailyText = async (date: Date, theme: PosterTheme, apiKey: string): Promise<DailyContent> => {
+  if (!apiKey) throw new Error("API Key is required");
+  
+  const ai = new GoogleGenAI({ apiKey });
   const dateStr = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
   
   const response = await ai.models.generateContent({
@@ -60,7 +60,10 @@ export const generateDailyText = async (date: Date, theme: PosterTheme): Promise
 /**
  * Generates the background image for the poster.
  */
-export const generatePosterImage = async (content: DailyContent, theme: PosterTheme): Promise<string> => {
+export const generatePosterImage = async (content: DailyContent, theme: PosterTheme, apiKey: string): Promise<string> => {
+  if (!apiKey) throw new Error("API Key is required");
+
+  const ai = new GoogleGenAI({ apiKey });
   const stylePrompt = THEME_PROMPTS[theme];
   
   // Construct a prompt that combines the generated text's mood with the chosen visual style.
