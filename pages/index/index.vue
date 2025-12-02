@@ -1,7 +1,7 @@
 <template>
   <view class="page" :class="{ dark: isDark }">
     <view class="hero">
-      <text class="headline">灵感日历 · Daily Inspiration</text>
+      <text class="headline">灵感日历 · 每日灵感</text>
       <text class="subtitle">跨端生成主题海报，随时保存与分享</text>
     </view>
 
@@ -127,7 +127,7 @@ const handleSave = async () => {
     // #ifdef H5
     const link = document.createElement('a')
     link.href = filePath
-    link.download = `inspiration-${date.value}.png`
+    link.download = `灵感日历-${date.value}.png`
     link.click()
     // #endif
 
@@ -166,7 +166,7 @@ const handleShare = async () => {
     // #ifdef H5
     const link = document.createElement('a')
     link.href = filePath
-    link.download = `inspiration-${date.value}.png`
+    link.download = `灵感日历-${date.value}.png`
     link.click()
     // #endif
 
