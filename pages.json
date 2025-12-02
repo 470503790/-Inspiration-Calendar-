@@ -1,0 +1,17 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "灵感日历",
+        "navigationBarTextStyle": "white",
+        "navigationBarBackgroundColor": "#2563eb"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationStyle": "default",
+    "backgroundColor": "#f3f4f6",
+    "backgroundTextStyle": "dark"
+  }
+}
