@@ -37,7 +37,20 @@ exports.main = async (event = {}, context) => {
   }
 
   const { date, theme } = event
-  const parsedDate = date ? new Date(date) : new Date()
+  if (!theme || !Object.prototype.hasOwnProperty.call(THEME_PROMPTS, theme)) {
+    return { code: 400, message: 'Invalid theme' }
+  }
+
+  let parsedDate
+  if (date === undefined || date === null || date === '') {
+    parsedDate = new Date()
+  } else {
+    const parsedTimestamp = Date.parse(date)
+    if (Number.isNaN(parsedTimestamp)) {
+      return { code: 400, message: 'Invalid date' }
+    }
+    parsedDate = new Date(parsedTimestamp)
+  }
   const dateStr = parsedDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
 
   const textModel = uniAI.createModel({
@@ -54,16 +67,22 @@ exports.main = async (event = {}, context) => {
   })
 
   const textPrompt = `Today is ${dateStr}. Generate content for a "Daily Inspiration Calendar" (灵感日历).
-Theme: ${theme}.
-Provide JSON for: quote, author, luckyItem, luckyColor, poem, lunarDate (with GanZhi), solarTerm, yi, ji.`
+  Theme: ${theme}.
+  Provide JSON for: quote, author, luckyItem, luckyColor, poem, lunarDate (with GanZhi), solarTerm, yi, ji.`
 
-  const textRes = await textModel.generate({ prompt: textPrompt })
-  const textJson = typeof textRes.output_text === 'string' ? JSON.parse(textRes.output_text) : textRes.output
+  let textJson
+  try {
+    const textRes = await textModel.generate({ prompt: textPrompt })
+    textJson = typeof textRes.output_text === 'string' ? JSON.parse(textRes.output_text) : textRes.output
+  } catch (error) {
+    console.error('Text generation or parsing error:', error)
+    return { code: 500, message: 'Failed to generate content' }
+  }
   if (!textJson) {
     return { code: 500, message: 'Failed to parse content' }
   }
 
-  const stylePrompt = THEME_PROMPTS[theme] || 'artistic poster'
+  const stylePrompt = THEME_PROMPTS[theme]
   const imagePrompt = `A beautiful square illustration without text. Style: ${stylePrompt}. Inspired by: ${textJson.quote}`
 
   const imageRes = await imageModel.generate({
