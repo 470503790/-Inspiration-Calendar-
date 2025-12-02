@@ -1,4 +1,3 @@
-
 export enum PosterTheme {
   MINIMALIST = '极简 (Minimalist)',
   WATERCOLOR = '水彩 (Watercolor)',
@@ -17,16 +16,23 @@ export interface DailyContent {
   luckyItem: string;
   luckyColor: string;
   poem?: string;
-  lunarDate: string; // Full lunar string e.g. 乙巳年 丁亥月 十月初八
-  solarTerm: string; // e.g. 小雪
-  yi: string; // Suitable activities
-  ji: string; // Avoid activities
+  lunarDate: string;
+  solarTerm: string;
+  yi: string;
+  ji: string;
 }
 
 export interface PosterData extends DailyContent {
-  date: Date;
+  date: string;
   theme: PosterTheme;
   imageUrl?: string;
 }
 
-export type GenerationStatus = 'idle' | 'generating_text' | 'generating_image' | 'finalizing' | 'complete' | 'error';
+export type GenerationStatus =
+  | 'idle'
+  | 'generating_text'
+  | 'generating_image'
+  | 'finalizing'
+  | 'complete'
+  | 'error'
+  | 'saving';
