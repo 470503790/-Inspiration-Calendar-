@@ -1,17 +1,17 @@
 # 灵感日历 · Inspiration Calendar
 
-跨端的 AI 生成灵感海报应用，基于 **uni-app + uniCloud + uni-ai** 架构实现：前端一次开发多端发布，云函数托管 Gemini 推理与安全配置，提供保存/分享等端能力适配。
+跨端的 AI 生成灵感海报应用，基于 **uni-app + uniCloud + uni-ai** 架构实现：前端一次开发多端发布，云函数托管推理与安全配置，提供保存/分享等端能力适配。
 
 ## 功能特性
 - 多主题每日灵感：支持极简、水彩、赛博朋克等多种美术风格的海报生成。
-- 云端 AI 生成：`generatePoster` 云函数使用 uni-ai 调用 Gemini 模型生成文案与插画，客户端无需暴露 API Key。
+- 云端 AI 生成：`generatePoster` 云函数使用 uni-ai 调用模型生成文案与插画，客户端无需暴露 API Key。
 - 多端适配：H5、小程序、App 端统一代码，按端使用对应的保存/分享能力。
 - 深色模式：页面支持主题切换，自动同步到全局应用包装。
 
 ## 目录与关键模块
 - `pages/index/index.vue`：主页，提供日期/主题选择、生成与保存/分享操作。
 - `components/Controls` / `components/Poster`：表单与海报展示组件。
-- `services/geminiService.ts`：前端调用 `generatePoster` 云函数的封装。
+- `services/posterService.ts`：前端调用 `generatePoster` 云函数的封装。
 - `uniCloud-aliyun/cloudfunctions/generatePoster`：云端文本与图片生成逻辑，包含主题提示词与参数校验。
 
 ## 前置要求

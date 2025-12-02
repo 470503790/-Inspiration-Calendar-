@@ -28,7 +28,7 @@
 
       <view class="right">
         <Poster :data="poster" :loading="isGenerating" @share="handleShare" />
-        <view class="tip">内容由云端 Gemini 模型生成，可能存在偏差</view>
+        <view class="tip">内容由云端模型生成，可能存在偏差</view>
       </view>
     </view>
   </view>
@@ -39,7 +39,7 @@ import { computed, ref } from 'vue'
 import Controls from '../../components/Controls/index.vue'
 import Poster from '../../components/Poster/index.vue'
 import { GenerationStatus, PosterData, PosterTheme } from '../../types'
-import { requestPosterFromCloud } from '../../services/geminiService'
+import { requestPosterFromCloud } from '../../services/posterService'
 
 const date = ref(new Date().toISOString().slice(0, 10))
 const theme = ref<PosterTheme>(PosterTheme.MINIMALIST)
