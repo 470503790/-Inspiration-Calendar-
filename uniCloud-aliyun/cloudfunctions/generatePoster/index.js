@@ -2,7 +2,7 @@
 
 const uniAI = require('uni-ai')
 
-const THEME_PROMPTS = {
+const DEFAULT_THEME_PROMPTS = {
   '极简 (Minimalist)': 'minimalist, clean lines, negative space, soft pastel colors, zen aesthetic, vector art style',
   '水彩 (Watercolor)': 'soft watercolor painting, artistic, dreamy, paper texture, fluid strokes, pastel tones',
   '赛博朋克 (Cyberpunk)': 'cyberpunk, neon lights, futuristic city, glowing vibrant colors, synthwave, digital art',
@@ -30,14 +30,57 @@ const textSchema = {
   required: ['quote', 'author', 'luckyItem', 'luckyColor', 'lunarDate', 'solarTerm', 'yi', 'ji']
 }
 
+const db = uniCloud.database()
+const posterCollection = db.collection('ic-poster-records')
+const configCollection = db.collection('ic-poster-config')
+
+const loadAdminConfig = async () => {
+  try {
+    const res = await configCollection.limit(1).get()
+    if (Array.isArray(res.data) && res.data.length > 0) {
+      return res.data[0]
+    }
+  } catch (error) {
+    console.error('Failed to load poster config from uni-admin:', error)
+  }
+  return {}
+}
+
+const persistRecord = async ({
+  date,
+  theme,
+  text,
+  image
+}) => {
+  try {
+    const createRes = await posterCollection.add({
+      date,
+      theme,
+      text,
+      image,
+      created_at: Date.now()
+    })
+    return createRes.id || (createRes.result && createRes.result.id)
+  } catch (error) {
+    console.error('Failed to persist poster record to uni-admin collection:', error)
+    return undefined
+  }
+}
+
 exports.main = async (event = {}, context) => {
-  const accessToken = process.env.BAIDU_ACCESS_TOKEN
+  const adminConfig = await loadAdminConfig()
+  const themePrompts = {
+    ...DEFAULT_THEME_PROMPTS,
+    ...(adminConfig.themePrompts || {})
+  }
+
+  const accessToken = adminConfig.baiduAccessToken || process.env.BAIDU_ACCESS_TOKEN
   if (!accessToken) {
     return { code: 500, message: 'Missing BAIDU_ACCESS_TOKEN' }
   }
 
   const { date, theme } = event
-  if (!theme || !Object.prototype.hasOwnProperty.call(THEME_PROMPTS, theme)) {
+  if (!theme || !Object.prototype.hasOwnProperty.call(themePrompts, theme)) {
     return { code: 400, message: 'Invalid theme' }
   }
 
@@ -81,12 +124,12 @@ exports.main = async (event = {}, context) => {
     return { code: 500, message: 'Failed to parse content' }
   }
 
-  const stylePrompt = THEME_PROMPTS[theme]
+  const stylePrompt = themePrompts[theme]
   const imagePrompt = `A beautiful square illustration without text. Style: ${stylePrompt}. Inspired by: ${textJson.quote}`
 
   const imageRes = await mediaManager.generateImage({
     prompt: imagePrompt,
-    size: '1024x1024'
+    size: adminConfig.imageSize || '1024x1024'
   })
 
   let base64Image = ''
@@ -102,12 +145,22 @@ exports.main = async (event = {}, context) => {
     return { code: 500, message: 'Image generation failed' }
   }
 
+  const recordId = await persistRecord({
+    date: dateStr,
+    theme,
+    text: textJson,
+    image: base64Image.startsWith('data:') ? base64Image : `data:image/png;base64,${base64Image}`
+  })
+
+  const imagePayload = base64Image.startsWith('data:') ? base64Image : `data:image/png;base64,${base64Image}`
+
   return {
     code: 0,
     message: 'ok',
     data: {
       text: textJson,
-      image: base64Image.startsWith('data:') ? base64Image : `data:image/png;base64,${base64Image}`
+      image: imagePayload,
+      recordId
     }
   }
 }

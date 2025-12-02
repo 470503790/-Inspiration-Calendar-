@@ -18,14 +18,14 @@
 - Node.js 18+。
 - npm 8+（或 pnpm/yarn，请自行将命令替换）。
 - 已安装 [HBuilderX](https://www.dcloud.io/hbuilderx.html) 或 `@dcloudio/uni-app` CLI（用于本地运行/打包）。
-- 在云服务空间或本地 uniCloud 模拟器中配置 `GEMINI_API_KEY` 环境变量（云函数读取）。
+- 在云服务空间或本地 uniCloud 模拟器中配置 `BAIDU_ACCESS_TOKEN` 环境变量（云函数读取，或通过 uni-admin 配置覆盖）。
 
 ## 本地运行
 1. 安装依赖：
    ```bash
    npm install
    ```
-2. 确认云函数可访问到 `GEMINI_API_KEY`：
+2. 确认云函数可访问到 `BAIDU_ACCESS_TOKEN`：
    - 线上空间：在 uniCloud 控制台 > 环境变量 中添加。
    - 本地调试：在 uniCloud 本地运行面板设置环境变量，或通过命令行注入。
 3. 启动 H5 预览（或在 HBuilderX 中选择目标平台运行）：
@@ -39,7 +39,12 @@
   ```bash
   npx uniCloud upload generatePoster
   ```
-- 确保部署环境已配置 `GEMINI_API_KEY`，否则云函数会返回 `Missing GEMINI_API_KEY` 错误。
+- 确保部署环境已配置 `BAIDU_ACCESS_TOKEN`（或在 uni-admin 中设置），否则云函数会返回 `Missing BAIDU_ACCESS_TOKEN` 错误。
+
+## uni-admin 后端集成
+- 生成的海报会同步写入 `ic-poster-records` 集合，方便在 uni-admin 控制台中按主题/时间回溯与审核。
+- 海报生成相关的配置（Access Token、图片尺寸、主题提示词）通过 uni-admin 维护：导入 `uniCloud-aliyun/database/ic-poster-config.schema.json` 后在管理页新增一条记录即可生效；未配置 Access Token 时继续读取环境变量 `BAIDU_ACCESS_TOKEN`。
+- 如果使用 schema2code，请在 uniCloud 数据库中导入 `uniCloud-aliyun/database/ic-poster-records.schema.json` 以生成对应的管理页。
 
 ## 生产构建
 根据目标端选择命令，例如：
