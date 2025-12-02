@@ -31,9 +31,9 @@ const textSchema = {
 }
 
 exports.main = async (event = {}, context) => {
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) {
-    return { code: 500, message: 'Missing GEMINI_API_KEY' }
+  const accessToken = process.env.BAIDU_ACCESS_TOKEN
+  if (!accessToken) {
+    return { code: 500, message: 'Missing BAIDU_ACCESS_TOKEN' }
   }
 
   const { date, theme } = event
@@ -54,16 +54,15 @@ exports.main = async (event = {}, context) => {
   const dateStr = parsedDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
 
   const textModel = uniAI.createModel({
-    provider: 'google',
-    model: 'gemini-2.5-flash',
-    apiKey,
+    provider: 'baidu',
+    model: 'ERNIE-Speed-128K',
+    accessToken,
     response_format: { type: 'json_object', schema: textSchema }
   })
 
-  const imageModel = uniAI.createModel({
-    provider: 'google',
-    model: 'gemini-2.5-flash-image',
-    apiKey
+  const mediaManager = uniCloud.ai.getMediaManager({
+    provider: 'baidu',
+    accessToken
   })
 
   const textPrompt = `Today is ${dateStr}. Generate content for a "Daily Inspiration Calendar" (灵感日历).
@@ -85,7 +84,7 @@ exports.main = async (event = {}, context) => {
   const stylePrompt = THEME_PROMPTS[theme]
   const imagePrompt = `A beautiful square illustration without text. Style: ${stylePrompt}. Inspired by: ${textJson.quote}`
 
-  const imageRes = await imageModel.generate({
+  const imageRes = await mediaManager.generateImage({
     prompt: imagePrompt,
     size: '1024x1024'
   })
@@ -95,6 +94,8 @@ exports.main = async (event = {}, context) => {
     base64Image = imageRes.output[0].b64_json || imageRes.output[0].base64 || ''
   } else if (typeof imageRes.output === 'string') {
     base64Image = imageRes.output
+  } else if (typeof imageRes.base64 === 'string') {
+    base64Image = imageRes.base64
   }
 
   if (!base64Image) {
