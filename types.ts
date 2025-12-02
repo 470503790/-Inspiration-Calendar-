@@ -1,13 +1,13 @@
 export enum PosterTheme {
-  MINIMALIST = '极简 (Minimalist)',
-  WATERCOLOR = '水彩 (Watercolor)',
-  CYBERPUNK = '赛博朋克 (Cyberpunk)',
-  INK_WASH = '水墨 (Ink Wash)',
-  OIL_PAINTING = '油画 (Oil Painting)',
-  PHOTOREALISTIC = '写实 (Photorealistic)',
-  RETRO_POP = '波普 (Retro Pop)',
-  CLAY_3D = '黏土 (Clay 3D)',
-  BLUEPRINT = '蓝图 (Blueprint)'
+  MINIMALIST = '极简',
+  WATERCOLOR = '水彩',
+  CYBERPUNK = '赛博朋克',
+  INK_WASH = '水墨',
+  OIL_PAINTING = '油画',
+  PHOTOREALISTIC = '写实',
+  RETRO_POP = '波普',
+  CLAY_3D = '黏土',
+  BLUEPRINT = '蓝图'
 }
 
 export interface DailyContent {

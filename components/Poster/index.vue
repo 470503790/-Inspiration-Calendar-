@@ -26,7 +26,7 @@
         <view class="poster-header" :class="themeClass.header">
           <view class="date-block">
             <text class="date-day" :class="themeClass.fontDate">{{ formatted.day }}</text>
-            <text class="meta" :class="themeClass.fontMeta">{{ formatted.monthEn }} · {{ formatted.year }}</text>
+            <text class="meta" :class="themeClass.fontMeta">{{ formatted.year }}年 · {{ formatted.monthZh }}</text>
           </view>
           <view class="meta-block" :class="themeClass.fontMeta">
             <text class="weekday">{{ formatted.weekdayZh }}</text>
@@ -94,14 +94,13 @@ const props = defineProps<{
 const emit = defineEmits(['share'])
 
 const formatted = computed(() => {
-  if (!props.data) return { day: '', monthEn: '', year: '', weekdayZh: '' }
+  if (!props.data) return { day: '', monthZh: '', year: '', weekdayZh: '' }
   return formatDateComponents(new Date(props.data.date))
 })
 
 const themeShort = computed(() => {
   if (!props.data) return ''
-  const [label] = props.data.theme.split(' ')
-  return label
+  return props.data.theme
 })
 
 const themeClass = computed(() => {
