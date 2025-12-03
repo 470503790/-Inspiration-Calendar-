@@ -1,18 +1,19 @@
-# uni-admin 后端资源
+## uni-admin
 
-本目录用于存放 uni-admin 的后台管理端资源（官方发版包）。请按以下步骤准备：
+uni-admin，是基于 uni-app 和 uniCloud 的管理后台项目模版。
 
-1. 访问 [uni-admin 官方插件市场](https://ext.dcloud.net.cn/plugin?id=3268) 下载最新的 **uni-admin 后台项目** 压缩包。
-2. 解压后将 `uniCloud-aliyun`（或 `uniCloud-tcb`）目录内容放入本目录，形成结构示例：
-   ```
-   backend/
-     uni-admin/
-       uniCloud-aliyun/
-         cloudfunctions/...
-         database/...
-         uni_modules/...
-   ```
-3. 打开 HBuilderX，导入本项目后在 uniCloud 面板选择 "关联已有服务空间"，上传 uni-admin 云函数及 DB 资源。
-4. 启动 `uni-admin` 前端（位于官方包 `admin` 目录）或直接在管理端登录后配置 `ic-poster-config` 与 `ic-poster-records` 集合，即可与本仓库的海报生成云函数联动。
+对于uniCloud的开发者而言，其后台管理系统应该使用本框架。
 
-> 提示：如仅需数据库管理界面，可在 `backend/uniCloud-aliyun/database` 导入本项目的 schema 后，通过 uni-admin 自动生成 CRUD 页面。
+我们搭建了[uni-admin演示站点](http://hellouniadmin.dcloud.net.cn/admin/)，你登录后即可快速体验uni-admin。
+
+uni-admin 是开源的，遵循 MIT 协议，你可以从[Github](https://github.com/dcloudio/uni-admin)或[码云](https://gitee.com/dcloud/uni-admin)获取源码，也可以从[DCloud插件市场](https://ext.dcloud.net.cn/plugin?id=3268)快捷下载。
+
+## 框架特征
+- 基于 uni-app 的宽屏适配，可自动适配 PC 宽屏和手机各端。了解[宽屏适配](https://uniapp.dcloud.io/adapt)
+- 基于 uniCloud，是 serverless 的云开发。了解[uniCloud](https://uniapp.dcloud.io/uniCloud/README)
+- 基于 uni-id，使用 uni-id 的用户账户、角色、权限系统。了解[uni-id](https://uniapp.dcloud.io/uniCloud/uni-id)
+
+## 看视频，15分钟掌握uni-admin
+<a target="_blank" href="https://www.bilibili.com/video/BV17p4y1a71x?p=13">
+    <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-f184e7c3-1912-41b2-b81f-435d1b37c7b4/4332911b-6624-4587-8c77-78b68f1f8c78.jpg" alt="uni-admin视频教程" style="width: 60%;">
+</a>

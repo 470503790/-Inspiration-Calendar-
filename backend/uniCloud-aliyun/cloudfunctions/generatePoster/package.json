@@ -1,6 +1,0 @@
-{
-  "name": "generatePoster",
-  "dependencies": {
-    "uni-ai": "^1.0.0"
-  }
-}
