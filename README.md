@@ -8,11 +8,15 @@
 - 多端适配：H5、小程序、App 端统一代码，按端使用对应的保存/分享能力。
 - 深色模式：页面支持主题切换，自动同步到全局应用包装。
 
-## 目录与关键模块
-- `pages/index/index.vue`：主页，提供日期/主题选择、生成与保存/分享操作。
-- `components/Controls` / `components/Poster`：表单与海报展示组件。
-- `services/posterService.ts`：前端调用 `generatePoster` 云函数的封装。
-- `uniCloud-aliyun/cloudfunctions/generatePoster`：云端文本与图片生成逻辑，包含主题提示词与参数校验。
+## 目录结构
+- `frontend/`：uni-app 前端工程（包含页面、组件、常量、构建配置等）。
+  - `frontend/pages/index/index.vue`：主页，提供日期/主题选择、生成与保存/分享操作。
+  - `frontend/components/Controls` / `frontend/components/Poster`：表单与海报展示组件。
+  - `frontend/services/posterService.ts`：前端调用 `generatePoster` 云函数的封装。
+- `backend/`：uniCloud 相关资源，按云厂商进一步分组。
+  - `backend/uniCloud-aliyun/cloudfunctions/generatePoster`：云端文本与图片生成逻辑，包含主题提示词与参数校验。
+  - `backend/uniCloud-aliyun/database/*.schema.json`：海报配置/记录集合的 schema，便于导入 uni-admin。
+  - `backend/uni-admin/`：用于放置 uni-admin 官方后台项目（下载后解压至此，方便统一管理云函数与数据库）。
 
 ## 前置要求
 - Node.js 18+。
@@ -23,6 +27,7 @@
 ## 本地运行
 1. 安装依赖：
    ```bash
+   cd frontend
    npm install
    ```
 2. 确认云函数可访问到 `BAIDU_ACCESS_TOKEN`：
@@ -30,21 +35,24 @@
    - 本地调试：在 uniCloud 本地运行面板设置环境变量，或通过命令行注入。
 3. 启动 H5 预览（或在 HBuilderX 中选择目标平台运行）：
    ```bash
+   cd frontend
    npm run dev
    ```
    默认使用 `uni` CLI 打包；如需指定平台，可使用 `npx uni -p h5` / `npx uni -p mp-weixin` 等参数。
 
 ## 云函数部署
-- 在 HBuilderX 的 uniCloud 面板上传 `generatePoster` 云函数，或使用 CLI：
+- 在 HBuilderX 的 uniCloud 面板上传 `generatePoster` 云函数，或使用 CLI（路径位于 `backend/uniCloud-aliyun`）：
   ```bash
+  cd backend/uniCloud-aliyun
   npx uniCloud upload generatePoster
   ```
 - 确保部署环境已配置 `BAIDU_ACCESS_TOKEN`（或在 uni-admin 中设置），否则云函数会返回 `Missing BAIDU_ACCESS_TOKEN` 错误。
 
 ## uni-admin 后端集成
+- 后台工程请下载官方 uni-admin 包并解压到 `backend/uni-admin/`，再在 HBuilderX 关联同一云服务空间后上传云函数/数据库资源。
 - 生成的海报会同步写入 `ic-poster-records` 集合，方便在 uni-admin 控制台中按主题/时间回溯与审核。
-- 海报生成相关的配置（Access Token、图片尺寸、主题提示词）通过 uni-admin 维护：导入 `uniCloud-aliyun/database/ic-poster-config.schema.json` 后在管理页新增一条记录即可生效；未配置 Access Token 时继续读取环境变量 `BAIDU_ACCESS_TOKEN`。
-- 如果使用 schema2code，请在 uniCloud 数据库中导入 `uniCloud-aliyun/database/ic-poster-records.schema.json` 以生成对应的管理页。
+- 海报生成相关的配置（Access Token、图片尺寸、主题提示词）通过 uni-admin 维护：导入 `backend/uniCloud-aliyun/database/ic-poster-config.schema.json` 后在管理页新增一条记录即可生效；未配置 Access Token 时继续读取环境变量 `BAIDU_ACCESS_TOKEN`。
+- 如果使用 schema2code，请在 uniCloud 数据库中导入 `backend/uniCloud-aliyun/database/ic-poster-records.schema.json` 以生成对应的管理页。
 
 ## 生产构建
 根据目标端选择命令，例如：
