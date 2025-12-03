@@ -1,8 +1,14 @@
 {
-  "name": "灵感日历-(inspiration-calendar)",
+  "name": "inspiration-calendar",
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "description": "Uni-app frontend for the Inspiration Calendar project",
+  "repository": {
+    "type": "git",
+    "url": "https://example.com/Inspiration-Calendar.git"
+  },
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "uni",
     "build": "uni build",
